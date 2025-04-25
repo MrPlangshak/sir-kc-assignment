@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            margin-bottom: 30px;
+        }
+        .class-container, .grade-container {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        .student-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .student-item {
+            padding: 8px;
+            margin: 5px 0;
+            background-color: #f5f5f5;
+            border-radius: 3px;
+        }
+        .grade-A { background-color: #d4edda; }
+        .grade-B { background-color: #cce5ff; }
+        .grade-C { background-color: #fff3cd; }
+        .grade-D { background-color: #f8d7da; }
+        .grade-F { background-color: #f1f1f1; }
+    </style>
+</head>
+<body>
+    <h1>Student Register</h1>
+    
+    <div class="container">
+        <h2>Students by Class</h2>
+        <div id="classes-container"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Students by Grade</h2>
+        <div id="grades-container"></div>
+    </div>
+
+    <script>
+        // Sample student data
+        const students = [
+            { name: "Bills Dee", class: "JSS1", score: 99 },
+            { name: "Nanbam Daks", class: "JSS2", score: 62 },
+            { name: "Praise Pallindron", class: "JSS1", score: 75 },
+            { name: "Kach Money", class: "JSS3", score: 83 },
+            { name: "Tim Love", class: "JSS2", score: 91 },
+            { name: "Nan Brymo", class: "JSS1", score: 88 },
+            { name: "Robert Emma", class: "JSS3", score: 79 },
+            { name: "Nanret Dev", class: "JSS2", score: 67 },
+            { name: "Senior Dev", class: "JSS1", score: 56 },
+            { name: "Magdee Dev", class: "JSS3", score: 42 }
+        ];
+
+        // Function to determine grade based on score
+        function getGrade(score) {
+            if (score >= 70) return "A";
+            if (score >= 60) return "B";
+            if (score >= 50) return "C";
+            if (score >= 40) return "D";
+            return "F";
+        }
+
+        // Function to display students by class
+        function displayStudentsByClass() {
+            const classesContainer = document.getElementById("classes-container");
+            
+            // Get all unique classes
+            const uniqueClasses = [...new Set(students.map(student => student.class))];
+            
+            // Sort classes alphabetically
+            uniqueClasses.sort();
+            
+            // Create a section for each class
+            uniqueClasses.forEach(className => {
+                const classContainer = document.createElement("div");
+                classContainer.className = "class-container";
+                
+                const classHeading = document.createElement("h3");
+                classHeading.textContent = className;
+                classContainer.appendChild(classHeading);
+                
+                const studentList = document.createElement("ul");
+                studentList.className = "student-list";
+                
+                // Filter students for this class
+                const classStudents = students.filter(student => student.class === className);
+                
+                // Sort students by name
+                classStudents.sort((a, b) => a.name.localeCompare(b.name));
+                
+                // Add each student to the list
+                classStudents.forEach(student => {
+                    const studentItem = document.createElement("li");
+                    studentItem.className = "student-item";
+                    studentItem.textContent = `${student.name} - Score: ${student.score} (Grade: ${getGrade(student.score)})`;
+                    studentItem.classList.add(`grade-${getGrade(student.score)}`);
+                    studentList.appendChild(studentItem);
+                });
+                
+                classContainer.appendChild(studentList);
+                classesContainer.appendChild(classContainer);
+            });
+        }
+
+        // Function to display students by grade
+        function displayStudentsByGrade() {
+            const gradesContainer = document.getElementById("grades-container");
+            
+            // Grade order for display
+            const gradeOrder = ["A", "B", "C", "D", "F"];
+            
+            // Create a section for each grade
+            gradeOrder.forEach(grade => {
+                const gradeContainer = document.createElement("div");
+                gradeContainer.className = "grade-container";
+                
+                const gradeHeading = document.createElement("h3");
+                gradeHeading.textContent = grade;
+                gradeContainer.appendChild(gradeHeading);
+                
+                const studentList = document.createElement("ul");
+                studentList.className = "student-list";
+                
+                // Filter students for this grade
+                const gradeStudents = students.filter(student => getGrade(student.score) === grade);
+                
+                // Sort students by score (descending)
+                gradeStudents.sort((a, b) => b.score - a.score);
+                
+                // Add each student to the list
+                gradeStudents.forEach(student => {
+                    const studentItem = document.createElement("li");
+                    studentItem.className = "student-item";
+                    studentItem.textContent = `${student.name} - Class: ${student.class}, Score: ${student.score}`;
+                    studentItem.classList.add(`grade-${grade}`);
+                    studentList.appendChild(studentItem);
+                });
+                
+                gradeContainer.appendChild(studentList);
+                gradesContainer.appendChild(gradeContainer);
+            });
+        }
+
+        // Initialize the display
+        window.onload = function() {
+            displayStudentsByClass();
+            displayStudentsByGrade();
+        };
+    </script>
+</body>
+</html>
